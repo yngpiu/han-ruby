@@ -1,43 +1,78 @@
 const toggle = document.getElementById('toggle')
 const urlEl = document.getElementById('url')
 const statusEl = document.getElementById('status')
+const hanInput = document.getElementById('hanInput')
+const pinyinOutput = document.getElementById('pinyinOutput')
 
 async function getHost() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-  const u = new URL(tab.url)
-  urlEl.textContent = u.hostname
-  return u.hostname
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+  if (!tabs[0]?.url) return ''
+  try {
+    return new URL(tabs[0].url).hostname
+  } catch {
+    return ''
+  }
 }
 
-async function isDisabled(host) {
-  const { disabledSites } = await chrome.storage.local.get({ disabledSites: [] })
-  return disabledSites.includes(host)
+async function isEnabled(host) {
+  if (!host) return false
+  const { enabledSites } = await chrome.storage.sync.get({ enabledSites: [] })
+  return enabledSites.includes(host)
 }
 
 function setStatus(on) {
-  statusEl.textContent = on ? 'Đang bật cho trang này' : 'Đã tắt cho trang này'
+  statusEl.textContent = on ? 'Đang bật' : 'Đã tắt'
 }
 
 ;(async () => {
+  const mod = await import(chrome.runtime.getURL('lib/pinyin-pro.mjs'))
+  const pinyin = mod.pinyin
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const el = document.getElementById(btn.dataset.target)
+      const text = el.innerText || el.textContent
+      if (!text) return
+      try {
+        await navigator.clipboard.writeText(text)
+        btn.classList.add('copied')
+        setTimeout(() => btn.classList.remove('copied'), 1200)
+      } catch {}
+    })
+  })
+
+  hanInput.addEventListener('input', () => {
+    const text = hanInput.innerText
+    pinyinOutput.textContent = text ? pinyin(text, { type: 'array' }).join(' ') : ''
+  })
+
   const host = await getHost()
-  const off = await isDisabled(host)
-  toggle.checked = !off
-  setStatus(!off)
+  if (!host) {
+    urlEl.textContent = 'Trang không hỗ trợ'
+    toggle.disabled = true
+    return
+  }
+  urlEl.textContent = host
+  const on = await isEnabled(host)
+  toggle.checked = on
+  setStatus(on)
 
   toggle.addEventListener('change', async () => {
-    const { disabledSites } = await chrome.storage.local.get({ disabledSites: [] })
+    const { enabledSites } = await chrome.storage.sync.get({ enabledSites: [] })
     const on = toggle.checked
     setStatus(on)
 
     if (on) {
-      const i = disabledSites.indexOf(host)
-      if (i > -1) disabledSites.splice(i, 1)
+      if (!enabledSites.includes(host)) enabledSites.push(host)
     } else {
-      if (!disabledSites.includes(host)) disabledSites.push(host)
+      const i = enabledSites.indexOf(host)
+      if (i > -1) enabledSites.splice(i, 1)
     }
-    await chrome.storage.local.set({ disabledSites })
+    await chrome.storage.sync.set({ enabledSites })
 
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-    chrome.tabs.sendMessage(tab.id, { action: 'toggle', enabled: on }).catch(() => {})
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+    if (tabs[0]?.id) {
+      chrome.tabs.sendMessage(tabs[0].id, { action: 'toggle', enabled: on }).catch(() => {})
+    }
   })
 })()

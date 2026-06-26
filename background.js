@@ -1,3 +1,3 @@
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.get({ disabledSites: [] }, () => {})
+  chrome.storage.sync.get({ enabledSites: [] }, () => {})
 })

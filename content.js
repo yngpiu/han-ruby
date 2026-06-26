@@ -95,14 +95,20 @@ function stop() {
   revert()
 }
 
+function syncState() {
+  chrome.storage.sync.get({ enabledSites: [] }, (data) => {
+    data.enabledSites.includes(location.hostname) ? start() : stop()
+  })
+}
+
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.action === 'toggle') {
     msg.enabled ? start() : stop()
   }
 })
 
-;(async () => {
-  const { disabledSites } = await chrome.storage.local.get({ disabledSites: [] })
-  const host = location.hostname
-  if (!disabledSites.includes(host)) start()
-})()
+chrome.storage.onChanged.addListener((changes) => {
+  if (changes.enabledSites) syncState()
+})
+
+syncState()
