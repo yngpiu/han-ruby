@@ -1,20 +1,28 @@
 # Han Ruby
 
-A Chrome extension that automatically annotates Chinese text with pinyin using `<ruby>` tags.
+Chrome extension tự động thêm pinyin vào chữ Hán trên trang web bằng thẻ `<ruby>`. Tích hợp sẵn công cụ chuyển đổi Hán tự → pinyin ngay trong popup.
 
-## How it works
+## Tính năng
 
-Uses [pinyin-pro](https://github.com/zh-lx/pinyin-pro) to generate pinyin for every Chinese character on the page, then wraps them in [ruby annotations](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby).
+- **Pinyin ruby** — tự động chèn pinyin phía trên mỗi chữ Hán trên mọi trang web
+- **Bật/tắt theo từng site** — click icon → toggle để bật/tắt pinyin cho trang hiện tại (mặc định tắt toàn bộ)
+- **Công cụ chuyển đổi** — gõ Hán tự trong popup, pinyin hiện realtime, có nút copy cho từng ô
 
-Works on all websites automatically — no configuration needed.
+## Cài đặt
 
-Click the extension icon → popup shows a toggle to enable/disable pinyin for the current site.
+1. Vào `chrome://extensions`
+2. Bật **Developer mode**
+3. **Load unpacked** → chọn thư mục `pinyin-extension`
 
-## Install
+## Sử dụng
 
-1. Go to `chrome://extensions`
-2. Enable **Developer mode**
-3. Click **Load unpacked** and select this folder
+- Click icon extension → bật/toggle **Pinyin ruby** để thêm pinyin lên trang
+- Ô phía dưới là công cụ chuyển đổi nhanh: gõ Hán tự → nhận pinyin ngay lập tức
+- Hover vào từng ô để thấy nút copy
+
+## Build
+
+Không cần build — extension chạy trực tiếp mã nguồn.
 
 ## License
 
