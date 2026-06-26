@@ -102,6 +102,7 @@ chrome.runtime.onMessage.addListener((msg) => {
 })
 
 ;(async () => {
-  const { enabled } = await chrome.storage.local.get({ enabled: true })
-  if (enabled) start()
+  const { disabledSites } = await chrome.storage.local.get({ disabledSites: [] })
+  const host = location.hostname
+  if (!disabledSites.includes(host)) start()
 })()

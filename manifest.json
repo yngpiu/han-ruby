@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Han Ruby",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Auto-annotates Chinese text with pinyin using ruby annotations",
-  "homepage_url": "https://github.com/yourname/han-ruby",
+  "homepage_url": "https://github.com/yngpiu/han-ruby",
   "author": "",
   "permissions": [
     "storage"
@@ -30,6 +30,7 @@
     "128": "icons/icon128.png"
   },
   "action": {
+    "default_popup": "popup.html",
     "default_title": "Han Ruby",
     "default_icon": {
       "16": "icons/icon16.png",
