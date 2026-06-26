@@ -68,7 +68,7 @@ function walk(root) {
 
 function revert() {
   document.querySelectorAll('[data-pinyin-done]').forEach(el => {
-    const tn = document.createTextNode(el.textContent)
+    const tn = document.createTextNode(el.childNodes[0].textContent)
     el.parentNode.replaceChild(tn, el)
   })
 }
