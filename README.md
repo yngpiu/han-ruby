@@ -8,6 +8,10 @@ Uses [pinyin-pro](https://github.com/zh-lx/pinyin-pro) to generate pinyin for ev
 
 Works on all websites automatically — no configuration needed.
 
+Click the extension icon in the toolbar to toggle on/off:
+- **Red icon** → active (pinyin shown)
+- **Gray icon** → disabled (original text restored)
+
 ## Install
 
 1. Go to `chrome://extensions`
